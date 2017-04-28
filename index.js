@@ -9,61 +9,56 @@ class shellExecutor extends Execution {
     super(process);
   }
 
-  exec() {
+  exec(execValues) {
     var _this = this;
     var endOptions = {end: 'end'};
 
-    return new Promise(async function (resolve, reject) {
+    var stdout = '';
+    var stderr = '';
+    var shell = {};
 
-      var stdout = '';
-      var stderr = '';
-      var shell = {};
+    var cmd = execValues.command;
+    shell.execute_args = [];
+    shell.execute_args_line = '';
 
-      var execValues = await _this.getValues();
-
-      var cmd = execValues.command;
-      shell.execute_args = [];
-      shell.execute_args_line = '';
-
-      if (execValues.args instanceof Array){
-        shell.execute_args = execValues.args;
-        for (var i = 0; i < execValues.args.length; i++) {
-          shell.execute_args_line = (shell.execute_args_line?shell.execute_args_line + ' ':'') + execValues.args[i];
-        }
+    if (execValues.args instanceof Array){
+      shell.execute_args = execValues.args;
+      for (var i = 0; i < execValues.args.length; i++) {
+        shell.execute_args_line = (shell.execute_args_line?shell.execute_args_line + ' ':'') + execValues.args[i];
       }
+    }
 
-      shell.proc = spawn(cmd, shell.execute_args, {shell: true});
-      shell.command_executed = cmd + ' ' + shell.execute_args_line;
-      endOptions.command_executed = shell.command_executed;
+    shell.proc = spawn(cmd, shell.execute_args, {shell: true});
+    shell.command_executed = cmd + ' ' + shell.execute_args_line;
+    endOptions.command_executed = shell.command_executed;
 
-      shell.proc.stdout.on('data', function (chunk) {
-        stdout += chunk;
-      });
-      shell.proc.stderr.on('data', function (chunk) {
-        stderr += chunk;
-      });
-      shell.proc
-        .on('error', function () {
-          //reject();
-        })
-        .on('close', function (code, signal) {
-          if (signal !== 'SIGKILL') {
-            if (code === 0) {
-              endOptions.end = 'end';
-              endOptions.execute_return = stdout;
-              endOptions.execute_err_return = stderr;
-              _this.end(endOptions, resolve, reject);
-            } else {
-              endOptions.end = 'error';
-              endOptions.messageLog = ' FIN: ' + code + ' - ' + stdout + ' - ' + stderr;
-              endOptions.execute_err_return = stderr;
-              endOptions.execute_return = stdout;
-              endOptions.retries_count = endOptions.retries_count + 1 || 1;
-              _this.end(endOptions, resolve, reject);
-            }
-          }
-        });
+    shell.proc.stdout.on('data', function (chunk) {
+      stdout += chunk;
     });
+    shell.proc.stderr.on('data', function (chunk) {
+      stderr += chunk;
+    });
+    shell.proc
+      .on('error', function () {
+        //reject();
+      })
+      .on('close', function (code, signal) {
+        if (signal !== 'SIGKILL') {
+          if (code === 0) {
+            endOptions.end = 'end';
+            endOptions.execute_return = stdout;
+            endOptions.execute_err_return = stderr;
+            _this.end(endOptions);
+          } else {
+            endOptions.end = 'error';
+            endOptions.messageLog = ' FIN: ' + code + ' - ' + stdout + ' - ' + stderr;
+            endOptions.execute_err_return = stderr;
+            endOptions.execute_return = stdout;
+            endOptions.retries_count = endOptions.retries_count + 1 || 1;
+            _this.end(endOptions);
+          }
+        }
+      });
   }
 
   kill(_process) {
