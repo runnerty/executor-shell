@@ -1,9 +1,9 @@
 {
-  "name": "runnerty-executor-shell",
-  "version": "1.0.1",
+  "name": "@runnerty/executor-shell",
+  "version": "0.0.1",
   "description": "Runnerty module: shell executor",
   "author": "Coderty",
-  "license": "ISC",
+  "license": "MIT",
   "main": "index.js",
   "repository": {
     "type": "git",
