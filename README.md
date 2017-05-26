@@ -13,7 +13,7 @@
 ```json
 {
   "id": "shell_ssh",
-  "type": "runnerty-executor-shell",
+  "type": "@runnerty/executor-shell",
   "host": "remote.server.com",
   "username": "runnerty",
   "privateKey": "./ssh/privateKeyFile.pem"
