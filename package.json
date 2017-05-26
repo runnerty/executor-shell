@@ -12,13 +12,16 @@
   "keywords": [
     "runnerty",
     "executor",
-    "shell"
+    "shell",
+    "ssh",
+    "remote",
+    "remote ops"
   ],
   "bugs": {
     "url": "https://github.com/Coderty/runnerty-executor-shell/issues"
   },
   "homepage": "https://github.com/Coderty/runnerty-executor-shell#readme",
   "dependencies": {
-    "ps-tree": "^1.1.0"
+    "ssh2": "^0.5.4"
   }
 }

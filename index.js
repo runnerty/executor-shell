@@ -1,7 +1,9 @@
 "use strict";
 
 var spawn = require("child_process").spawn;
-var psTree = require('ps-tree');
+var spawnSsh = require("ssh2").Client;
+var fs = require("fs");
+
 var Execution = global.ExecutionClass;
 
 class shellExecutor extends Execution {
@@ -9,103 +11,214 @@ class shellExecutor extends Execution {
     super(process);
   }
 
+  execCommand(execValues, command, getPID) {
+    var _this = this;
+    return new Promise((resolve) => {
+      let stdout = "";
+      let stderr = "";
+      let shell = {};
+
+      if (execValues.host) {
+        let connection = {};
+        connection.username = execValues.username;
+        connection.host = execValues.host;
+        connection.port = execValues.port || 22;
+        if (execValues.privateKey) connection.privateKey = fs.readFileSync(execValues.privateKey);
+
+        shell.proc = new spawnSsh();
+        shell.proc.on("ready", function () {
+          if (getPID) command = command + " & echo [__PID $! PID__]";
+          shell.proc.exec(command, function (err, stream) {
+            if (err) {
+              resolve({"stdout": stdout, "stderr": stderr, "err": err});
+            }
+            stream.on("close", function (code, signal) {
+              shell.proc.end();
+              resolve({"stdout": stdout, "stderr": stderr, "code": code, "signal": signal});
+            })
+              .on("data", function (chunk) {
+                stdout += chunk;
+                if (getPID) {
+                  let pIitPid = stdout.indexOf("[__PID ");
+                  let pEndPid = stdout.indexOf(" PID__]");
+                  if (pIitPid > -1 && pEndPid > -1) {
+                    let longPid = pIitPid - 7 + pEndPid;
+                    shell.proc.pid = stdout.substr(pIitPid + 7, longPid);
+                    _this.pid = shell.proc.pid;
+                    _this.shell_proc = shell.proc;
+                    stdout = stdout.substr(0, pIitPid) + stdout.substr(pEndPid + 8, stdout.length);
+                  }
+                }
+              }).stderr.on("data", function (chunk) {
+              stderr += chunk;
+            });
+          });
+        }).connect(connection);
+      } else {
+        shell.proc = spawn(command, [], {shell: true});
+
+        shell.proc.stdout.on("data", function (chunk) {
+          stdout += chunk;
+          if (getPID) {
+            _this.pid = shell.proc.pid;
+          }
+        });
+        shell.proc.stderr.on("data", function (chunk) {
+          stderr += chunk;
+        });
+        shell.proc
+          .on("close", function (code, signal) {
+            resolve({"stdout": stdout, "stderr": stderr, "code": code, "signal": signal});
+          });
+      }
+    });
+  }
+
+  killChildProcess(pid, execValues) {
+    var _this = this;
+    return new Promise((resolve) => {
+      let command = "kill -s SIGKILL " + pid;
+
+      _this.execCommand(execValues, command)
+        .then(() => {
+          resolve();
+        })
+        .catch((err) => {
+          resolve(err);
+        });
+    });
+  }
+
+  killChildsProcess(pidLines, times, pidParent, execValues) {
+    var _this = this;
+    return new Promise(function (resolve, reject) {
+      if (times === -1) {
+        _this.killChildProcess(pidParent, execValues)
+          .then(() => {
+            resolve();
+          })
+          .catch(function (err) {
+            reject(err);
+          });
+
+      } else {
+        let procLine = pidLines[times];
+        let proc = procLine.trim().split(/\s+/);
+
+        if (proc[1] === pidParent) {
+          _this.killChildsProcess(pidLines, pidLines.length - 2, proc[2], execValues)
+            .then(() => {
+              times--;
+              resolve(_this.killChildsProcess(pidLines, times, pidParent, execValues));
+            })
+            .catch(function () {
+              times--;
+              resolve(_this.killChildsProcess(pidLines, times, pidParent, execValues));
+            });
+        } else {
+          times--;
+          resolve(_this.killChildsProcess(pidLines, times, pidParent, execValues));
+        }
+      }
+    });
+  }
+
+  killProcess(pid, execValues) {
+    var _this = this;
+    return new Promise(function (resolve, reject) {
+      _this.execCommand(execValues, "ps -A -o comm,ppid,pid,stat")
+        .then((res) => {
+          if (res.signal === "SIGKILL") {
+            resolve();
+          } else {
+            if (res.code === 0) {
+              let pidList = res.stdout.split("\n");
+              let numItemsList = pidList.length - 2;
+
+              _this.killChildsProcess(pidList, numItemsList, pid, execValues)
+                .then(() => {
+                  resolve();
+                })
+                .catch(function (err) {
+                  reject(err);
+                });
+            } else {
+              reject(res);
+            }
+          }
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  }
+
   exec(execValues) {
     var _this = this;
-    var endOptions = {end: 'end'};
-
-    var stdout = '';
-    var stderr = '';
+    var endOptions = {end: "end"};
     var shell = {};
 
     var cmd = execValues.command;
     shell.execute_args = [];
-    shell.execute_args_line = '';
+    shell.execute_args_line = "";
 
-    if (execValues.args instanceof Array){
+    if (execValues.args instanceof Array) {
       shell.execute_args = execValues.args;
       for (var i = 0; i < execValues.args.length; i++) {
-        shell.execute_args_line = (shell.execute_args_line?shell.execute_args_line + ' ':'') + execValues.args[i];
+        shell.execute_args_line = (shell.execute_args_line ? shell.execute_args_line + " " : "") + execValues.args[i];
       }
     }
 
-    shell.proc = spawn(cmd, shell.execute_args, {shell: true});
-    shell.command_executed = cmd + ' ' + shell.execute_args_line;
+    shell.command_executed = cmd + " " + shell.execute_args_line;
     endOptions.command_executed = shell.command_executed;
 
-    shell.proc.stdout.on('data', function (chunk) {
-      stdout += chunk;
-    });
-    shell.proc.stderr.on('data', function (chunk) {
-      stderr += chunk;
-    });
-    shell.proc
-      .on('error', function () {
-        //reject();
-      })
-      .on('close', function (code, signal) {
-        if (signal !== 'SIGKILL') {
-          if (code === 0) {
-            endOptions.end = 'end';
-            endOptions.execute_return = stdout;
-            endOptions.execute_err_return = stderr;
+    _this.execCommand(execValues, shell.command_executed, true)
+      .then((res) => {
+        if(!_this.killing){
+          _this.killing = false;
+          if (res.code === 0) {
+            endOptions.end = "end";
+            endOptions.execute_return = res.stdout;
+            endOptions.execute_err_return = res.stderr;
             _this.end(endOptions);
           } else {
-            endOptions.end = 'error';
-            endOptions.messageLog = ' FIN: ' + code + ' - ' + stdout + ' - ' + stderr;
-            endOptions.execute_err_return = stderr;
-            endOptions.execute_return = stdout;
+            endOptions.end = "error";
+            endOptions.messageLog = " ERROR: " + res.code + " - " + res.stdout + " - " + res.stderr;
+            endOptions.execute_err_return = res.stderr;
+            endOptions.execute_return = res.stdout;
             endOptions.retries_count = endOptions.retries_count + 1 || 1;
             _this.end(endOptions);
           }
         }
+      })
+      .catch(function (err) {
+        endOptions.end = "error";
+        endOptions.messageLog = " ERROR: " + err;
+        endOptions.execute_err_return = err;
+        endOptions.execute_return = err;
+        _this.end(endOptions);
       });
   }
 
-  kill(_process) {
+  kill(execValues, reason) {
     var _this = this;
+    var endOptions = {end: "end"};
 
-    function kill(pid, killTree, signal) {
-      signal = signal || 'SIGKILL';
-      killTree = killTree || true;
-      return new Promise(function (resolve, reject) {
-        if (killTree && _process.platform !== 'win32') {
-          psTree(pid, function (err, children) {
-            [pid].concat(
-              children.map(function (p) {
-                return p.PID;
-              })
-            ).forEach(function (tpid) {
-              try {
-                _process.kill(tpid, signal);
-              }
-              catch (ex) {
-              }
-            });
+    _this.killing = true;
 
-            resolve();
-          });
-        }
-        else {
-          try {
-            _process.kill(pid, signal);
-          }
-          catch (ex) {
-          }
-          resolve();
-        }
+    _this.killProcess(_this.pid, execValues)
+      .then(() => {
+        endOptions.end = "end";
+        endOptions.execute_return = "KILLED " + reason;
+        _this.end(endOptions);
+      })
+      .catch(function (err) {
+        endOptions.end = "error";
+        endOptions.messageLog = " ERROR: KILLING:" + reason + err;
+        endOptions.execute_err_return = err;
+        endOptions.execute_return = err;
+        _this.end(endOptions);
       });
-    }
-
-    return new Promise(function (resolve, reject) {
-      kill(_process.proc.pid)
-        .then((res) => {
-          resolve();
-        })
-        .catch((err) => {
-          _this.logger.log('error', `Killing process ${_process.id}:`, err);
-          reject();
-        });
-    });
   }
 }
 
