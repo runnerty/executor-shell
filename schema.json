@@ -1,26 +1,53 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "runnerty-executor-shell",
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "title": "@runnerty-executor-shell",
   "definitions": {
-    "config":
-    { "type": "object",
-      "required": ["id","type"],
-      "properties":{
-        "id": {"type": "string"},
-        "type": {"type": "string", "pattern": "runnerty-executor-shell"},
-        "host": {"type": ["string"]},
-        "port": {"type": "number"},
-        "username": {"type": "string"},
-        "privateKey": {"type": "string"}
+    "config": {
+      "type": "object",
+      "required": [
+        "id",
+        "type"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "pattern": "@runnerty-executor-shell"
+        },
+        "host": {
+          "type": [
+            "string"
+          ]
+        },
+        "port": {
+          "type": "number"
+        },
+        "username": {
+          "type": "string"
+        },
+        "privateKey": {
+          "type": "string"
+        }
       }
     },
-    "params":
-    { "type": "object",
-      "required": ["id","command"],
-      "properties":{
-        "id": {"type": "string"},
-        "command": {"type": "string"},
-        "args": {"type": "array"}
+    "params": {
+      "type": "object",
+      "required": [
+        "id",
+        "command"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "command": {
+          "type": "string"
+        },
+        "args": {
+          "type": "array"
+        }
       }
     }
   }
