@@ -178,14 +178,14 @@ class shellExecutor extends Execution {
           _this.killing = false;
           if (res.code === 0) {
             endOptions.end = "end";
-            endOptions.execute_return = res.stdout;
-            endOptions.execute_err_return = res.stderr;
+            endOptions.msg_output = res.stdout;
+            endOptions.err_output = res.stderr;
             _this.end(endOptions);
           } else {
             endOptions.end = "error";
             endOptions.messageLog = " ERROR: " + res.code + " - " + res.stdout + " - " + res.stderr;
-            endOptions.execute_err_return = res.stderr;
-            endOptions.execute_return = res.stdout;
+            endOptions.err_output = res.stderr;
+            endOptions.msg_output = res.stdout;
             endOptions.retries_count = endOptions.retries_count + 1 || 1;
             _this.end(endOptions);
           }
@@ -194,8 +194,8 @@ class shellExecutor extends Execution {
       .catch(function (err) {
         endOptions.end = "error";
         endOptions.messageLog = " ERROR: " + err;
-        endOptions.execute_err_return = err;
-        endOptions.execute_return = err;
+        endOptions.err_output = err;
+        endOptions.msg_output = err;
         _this.end(endOptions);
       });
   }
@@ -209,14 +209,14 @@ class shellExecutor extends Execution {
     _this.killProcess(_this.pid, execValues)
       .then(() => {
         endOptions.end = "end";
-        endOptions.execute_return = "KILLED " + reason;
+        endOptions.msg_output = "KILLED " + reason;
         _this.end(endOptions);
       })
       .catch(function (err) {
         endOptions.end = "error";
         endOptions.messageLog = " ERROR: KILLING:" + reason + err;
-        endOptions.execute_err_return = err;
-        endOptions.execute_return = err;
+        endOptions.err_output = err;
+        endOptions.msg_output = err;
         _this.end(endOptions);
       });
   }

@@ -1,6 +1,6 @@
 {
   "name": "@runnerty/executor-shell",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Runnerty module: shell executor",
   "author": "Coderty",
   "license": "MIT",
