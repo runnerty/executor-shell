@@ -1,13 +1,13 @@
 {
   "name": "@runnerty/executor-shell",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Runnerty module: shell executor",
   "author": "Coderty",
   "license": "MIT",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Coderty/runnerty-executor-shell.git"
+    "url": "git+https://github.com/runnerty/executor-shell.git"
   },
   "keywords": [
     "runnerty",
@@ -18,9 +18,9 @@
     "remote ops"
   ],
   "bugs": {
-    "url": "https://github.com/Coderty/runnerty-executor-shell/issues"
+    "url": "https://github.com/runnerty/executor-shell/issues"
   },
-  "homepage": "https://github.com/Coderty/runnerty-executor-shell#readme",
+  "homepage": "https://github.com/runnerty/executor-shell#readme",
   "dependencies": {
     "ssh2": "^0.5.5"
   }
