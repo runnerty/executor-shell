@@ -47,6 +47,9 @@
         },
         "args": {
           "type": "array"
+        },
+        "outputJSON": {
+          "type": "boolean"
         }
       }
     }

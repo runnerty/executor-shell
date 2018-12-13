@@ -44,4 +44,30 @@
 }
 ```
 
+Using the `outputJSON` param, if you have a process which returns a JSON object, the executor will generate automatically a value for each value of the object:
+
+```json
+{
+  "id":"shell_default",
+  "command":"node my-returning-object-process.js",
+}
+```
+
+This the output of `my-returning-object-process.js`:
+
+```javascript
+let output = {
+  name: 'Steve',
+  lastName: 'Harrington'
+}
+```
+
+Output values with the object's values:
+
+```
+@GV(PROCESS_EXEC_JSON_NAME) --> Steve
+@GV(PROCESS_EXEC_JSON_LASTNAME) --> Harrington
+...
+```
+
 [Runnerty]: http://www.runnerty.io

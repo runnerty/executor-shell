@@ -1,6 +1,6 @@
 {
   "name": "@runnerty/executor-shell",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Runnerty module: shell executor",
   "author": "Coderty",
   "license": "MIT",
@@ -22,6 +22,6 @@
   },
   "homepage": "https://github.com/runnerty/executor-shell#readme",
   "dependencies": {
-    "ssh2": "^0.5.5"
+    "ssh2": "^0.6.1"
   }
 }

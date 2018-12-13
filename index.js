@@ -1,10 +1,10 @@
 "use strict";
 
-var spawn = require("child_process").spawn;
-var spawnSsh = require("ssh2").Client;
-var fs = require("fs");
+const spawn = require("child_process").spawn;
+const spawnSsh = require("ssh2").Client;
+const fs = require("fs");
 
-var Execution = global.ExecutionClass;
+const Execution = global.ExecutionClass;
 
 class shellExecutor extends Execution {
   constructor(process) {
@@ -12,7 +12,7 @@ class shellExecutor extends Execution {
   }
 
   execCommand(execValues, command, getPID) {
-    var _this = this;
+    const _this = this;
     return new Promise((resolve) => {
       let stdout = "";
       let stderr = "";
@@ -26,17 +26,17 @@ class shellExecutor extends Execution {
         if (execValues.privateKey) connection.privateKey = fs.readFileSync(execValues.privateKey);
 
         shell.proc = new spawnSsh();
-        shell.proc.on("ready", function () {
+        shell.proc.on("ready", () => {
           if (getPID) command = command + " & echo [__PID $! PID__]";
-          shell.proc.exec(command, function (err, stream) {
+          shell.proc.exec(command, (err, stream) =>{
             if (err) {
               resolve({"stdout": stdout, "stderr": stderr, "err": err});
             }
-            stream.on("close", function (code, signal) {
+            stream.on("close", (code, signal) =>{
               shell.proc.end();
               resolve({"stdout": stdout, "stderr": stderr, "code": code, "signal": signal});
             })
-              .on("data", function (chunk) {
+              .on("data", (chunk) => {
                 stdout += chunk;
                 if (getPID) {
                   let pIitPid = stdout.indexOf("[__PID ");
@@ -49,7 +49,7 @@ class shellExecutor extends Execution {
                     stdout = stdout.substr(0, pIitPid) + stdout.substr(pEndPid + 8, stdout.length);
                   }
                 }
-              }).stderr.on("data", function (chunk) {
+              }).stderr.on("data", (chunk) =>{
               stderr += chunk;
             });
           });
@@ -57,17 +57,17 @@ class shellExecutor extends Execution {
       } else {
         shell.proc = spawn(command, [], {shell: true});
 
-        shell.proc.stdout.on("data", function (chunk) {
+        shell.proc.stdout.on("data", (chunk) =>{
           stdout += chunk;
           if (getPID) {
             _this.pid = shell.proc.pid;
           }
         });
-        shell.proc.stderr.on("data", function (chunk) {
+        shell.proc.stderr.on("data", (chunk) =>{
           stderr += chunk;
         });
         shell.proc
-          .on("close", function (code, signal) {
+          .on("close", (code, signal) =>{
             resolve({"stdout": stdout, "stderr": stderr, "code": code, "signal": signal});
           });
       }
@@ -75,7 +75,7 @@ class shellExecutor extends Execution {
   }
 
   killChildProcess(pid, execValues) {
-    var _this = this;
+    const _this = this;
     return new Promise((resolve) => {
       let command = "kill -s SIGKILL " + pid;
 
@@ -90,14 +90,14 @@ class shellExecutor extends Execution {
   }
 
   killChildsProcess(pidLines, times, pidParent, execValues) {
-    var _this = this;
-    return new Promise(function (resolve, reject) {
+    const _this = this;
+    return new Promise((resolve, reject) =>{
       if (times === -1) {
         _this.killChildProcess(pidParent, execValues)
           .then(() => {
             resolve();
           })
-          .catch(function (err) {
+          .catch( (err) =>{
             reject(err);
           });
 
@@ -111,7 +111,7 @@ class shellExecutor extends Execution {
               times--;
               resolve(_this.killChildsProcess(pidLines, times, pidParent, execValues));
             })
-            .catch(function () {
+            .catch(() => {
               times--;
               resolve(_this.killChildsProcess(pidLines, times, pidParent, execValues));
             });
@@ -124,8 +124,8 @@ class shellExecutor extends Execution {
   }
 
   killProcess(pid, execValues) {
-    var _this = this;
-    return new Promise(function (resolve, reject) {
+    const _this = this;
+    return new Promise((resolve, reject) =>{
       _this.execCommand(execValues, "ps -A -o comm,ppid,pid,stat")
         .then((res) => {
           if (res.signal === "SIGKILL") {
@@ -139,7 +139,7 @@ class shellExecutor extends Execution {
                 .then(() => {
                   resolve();
                 })
-                .catch(function (err) {
+                .catch((err) =>{
                   reject(err);
                 });
             } else {
@@ -154,17 +154,17 @@ class shellExecutor extends Execution {
   }
 
   exec(execValues) {
-    var _this = this;
-    var endOptions = {end: "end"};
-    var shell = {};
+    const _this = this;
+    let endOptions = {end: "end"};
+    let shell = {};
 
-    var cmd = execValues.command;
+    let cmd = execValues.command;
     shell.execute_args = [];
     shell.execute_args_line = "";
 
     if (execValues.args instanceof Array) {
       shell.execute_args = execValues.args;
-      for (var i = 0; i < execValues.args.length; i++) {
+      for (let i = 0; i < execValues.args.length; i++) {
         shell.execute_args_line = (shell.execute_args_line ? shell.execute_args_line + " " : "") + execValues.args[i];
       }
     }
@@ -180,6 +180,18 @@ class shellExecutor extends Execution {
             endOptions.end = "end";
             endOptions.msg_output = res.stdout;
             endOptions.err_output = res.stderr;
+            // outputJSON:
+            if(execValues.outputJSON){
+              try{
+                endOptions.data_output = JSON.parse(res.stdout);
+              }catch(err){
+                endOptions.end = "error";
+                endOptions.messageLog = " ERROR: THE OUTPUT PROCESS IS NOT A VALID JSON OBJECT:" + res.stdout;
+                endOptions.err_output = " ERROR: THE OUTPUT PROCESS IS NOT A VALID JSON OBJECT:" + res.stdout;
+                endOptions.msg_output = " ERROR: THE OUTPUT PROCESS IS NOT A VALID JSON OBJECT:" + res.stdout;
+                _this.end(endOptions);
+              }
+            }
             _this.end(endOptions);
           } else {
             endOptions.end = "error";
@@ -191,7 +203,7 @@ class shellExecutor extends Execution {
           }
         }
       })
-      .catch(function (err) {
+      .catch((err) =>{
         endOptions.end = "error";
         endOptions.messageLog = " ERROR: " + err;
         endOptions.err_output = err;
@@ -201,8 +213,8 @@ class shellExecutor extends Execution {
   }
 
   kill(execValues, reason) {
-    var _this = this;
-    var endOptions = {end: "end"};
+    const _this = this;
+    let endOptions = {end: "end"};
 
     _this.killing = true;
 
@@ -212,7 +224,7 @@ class shellExecutor extends Execution {
         endOptions.msg_output = "KILLED " + reason;
         _this.end(endOptions);
       })
-      .catch(function (err) {
+      .catch((err) =>{
         endOptions.end = "error";
         endOptions.messageLog = " ERROR: KILLING:" + reason + err;
         endOptions.err_output = err;
