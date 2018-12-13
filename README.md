@@ -44,7 +44,7 @@
 }
 ```
 
-Using the `outputJSON` param, if you have a process which returns a JSON object, the executor will generate automatically a value for each value of the object:
+### Using the `outputJSON` param, if you have a process which returns a JSON object, the executor will generate automatically a value for each value of the object:
 
 ```json
 {
@@ -55,19 +55,18 @@ Using the `outputJSON` param, if you have a process which returns a JSON object,
 
 This the output of `my-returning-object-process.js`:
 
-```javascript
-let output = {
-  name: 'Steve',
-  lastName: 'Harrington'
+```json
+{
+  "name": "my output name",
+  "lastName": "my output lastName"
 }
 ```
 
 Output values with the object's values:
 
 ```
-@GV(PROCESS_EXEC_JSON_NAME) --> Steve
-@GV(PROCESS_EXEC_JSON_LASTNAME) --> Harrington
-...
+@GV(PROCESS_EXEC_JSON_NAME) --> "my output name"
+@GV(PROCESS_EXEC_JSON_LASTNAME) --> "my output lastName"
 ```
 
 [Runnerty]: http://www.runnerty.io

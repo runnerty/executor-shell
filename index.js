@@ -184,6 +184,11 @@ class shellExecutor extends Execution {
             if(execValues.outputJSON){
               try{
                 endOptions.data_output = JSON.parse(res.stdout);
+                endOptions.extra_output = {}; 
+                const object = JSON.parse(res.stdout)
+                for(const key in object){
+                  endOptions.extra_output['JSON_'+key] = object[key];
+                }
               }catch(err){
                 endOptions.end = "error";
                 endOptions.messageLog = " ERROR: THE OUTPUT PROCESS IS NOT A VALID JSON OBJECT:" + res.stdout;
