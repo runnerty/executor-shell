@@ -4,10 +4,7 @@
   "definitions": {
     "config": {
       "type": "object",
-      "required": [
-        "id",
-        "type"
-      ],
+      "required": ["id", "type"],
       "properties": {
         "id": {
           "type": "string"
@@ -17,9 +14,7 @@
           "pattern": "@runnerty-executor-shell"
         },
         "host": {
-          "type": [
-            "string"
-          ]
+          "type": ["string"]
         },
         "port": {
           "type": "number"
@@ -29,15 +24,15 @@
         },
         "privateKey": {
           "type": "string"
+        },
+        "debug": {
+          "type": "boolean"
         }
       }
     },
     "params": {
       "type": "object",
-      "required": [
-        "id",
-        "command"
-      ],
+      "required": ["id", "command"],
       "properties": {
         "id": {
           "type": "string"
@@ -47,6 +42,9 @@
         },
         "args": {
           "type": "array"
+        },
+        "debug": {
+          "type": "boolean"
         },
         "outputJSON": {
           "type": "boolean"
