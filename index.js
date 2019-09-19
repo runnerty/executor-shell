@@ -29,7 +29,7 @@ class shellExecutor extends Execution {
         if (debug)
           _this.logger.log(
             'info',
-            `SHELL DEBUG - Remote shell. Host:${execValues.host}. Connection:${connection}. PrivateKey:${execValues.privateKey}.`
+            `SHELL DEBUG - Remote shell. Host:${execValues.host} / username:${connection.username}/ port:${connection.port} / privateKey:${execValues.privateKey}.`
           );
 
         if (execValues.privateKey) {
@@ -111,7 +111,7 @@ class shellExecutor extends Execution {
                       if (debug)
                         _this.logger.log(
                           'info',
-                          `SHELL DEBUG - Remote Stream: DATA. PID:${_this.pid} / PROC:${_this.shell_proc}`
+                          `SHELL DEBUG - Remote Stream: DATA. PID:${_this.pid}`
                         );
 
                       stdout =
@@ -119,9 +119,19 @@ class shellExecutor extends Execution {
                         stdout.substr(pEndPid + 8, stdout.length);
                     }
                   }
+                  if (debug)
+                    _this.logger.log(
+                      'info',
+                      `SHELL DEBUG - Remote Stream DATA:${chunk}`
+                    );
                 })
                 .stderr.on('data', chunk => {
                   stderr += chunk;
+                  if (debug)
+                    _this.logger.log(
+                      'info',
+                      `SHELL DEBUG - Remote Stream STDERR-DATA:${chunk}`
+                    );
                 });
             });
           })
