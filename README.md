@@ -1,6 +1,24 @@
+<p align="center">
+  <a href="http://runnerty.io">
+    <img height="257" src="https://runnerty.io/assets/header/logo-stroked.png">
+  </a>
+  <p align="center">A new way for processes managing</p>
+</p>
+
+[![NPM version][npm-image]][npm-url] [![Downloads][downloads-image]][npm-url] [![Dependency Status][david-badge]][david-badge-url]
+<a href="#badge">
+  <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg">
+</a>
+
 # Shell executor for [Runnerty]:
 
+### Installation:
+```bash
+npm i @runnerty/executor-shell
+```
+
 ### Configuration sample:
+Add in [config.json]:
 #### Local
 ```json
 {
@@ -21,6 +39,7 @@
 ```
 
 ### Plan sample:
+Add in [plan.json]:
 ```json
 {
   "id":"shell_default",
@@ -62,11 +81,19 @@ This the output of `my-returning-object-process.js`:
 }
 ```
 
-Output values with the object's values:
-
+Output values with the object's values.
+It is possible to access the values by [GETVALUE] function:
 ```
 @GV(PROCESS_EXEC_JSON_NAME) --> "my output name"
 @GV(PROCESS_EXEC_JSON_LASTNAME) --> "my output lastName"
 ```
 
 [Runnerty]: http://www.runnerty.io
+[downloads-image]: https://img.shields.io/npm/dm/@runnerty/executor-shell.svg
+[npm-url]: https://www.npmjs.com/package/@runnerty/executor-shell
+[npm-image]: https://img.shields.io/npm/v/@runnerty/executor-shell.svg
+[david-badge]: https://david-dm.org/runnerty/executor-shell.svg
+[david-badge-url]: https://david-dm.org/runnerty/executor-shell
+[GETVALUE]: http://docs.runnerty.io/functions/
+[config.json]: http://docs.runnerty.io/config/
+[plan.json]: http://docs.runnerty.io/plan/
