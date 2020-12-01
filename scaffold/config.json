@@ -1,0 +1,15 @@
+{
+  "executors": [
+    {
+      "id": "shell_default",
+      "type": "@runnerty-executor-shell"
+    },
+    {
+      "id": "shell_ssh",
+      "type": "@runnerty-executor-shell",
+      "host": "remote.server.com",
+      "username": "runnerty",
+      "privateKey": "./ssh/privateKeyFile.pem"
+    }
+  ]
+}
