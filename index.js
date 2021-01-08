@@ -4,9 +4,9 @@ const spawn = require('child_process').spawn;
 const spawnSsh = require('ssh2').Client;
 const fs = require('fs');
 
-const Execution = global.ExecutionClass;
+const Executor = require('@runnerty/module-core').Executor;
 
-class shellExecutor extends Execution {
+class shellExecutor extends Executor {
   constructor(process) {
     super(process);
     this.debug = false;
