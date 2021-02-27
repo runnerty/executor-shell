@@ -7,6 +7,4 @@ LICENSE
 *.png
 *.txt
 TODO
-*.md
-test.log
 .DS_Store
