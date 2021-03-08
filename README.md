@@ -59,6 +59,30 @@ Add in [config.json]:
 }
 ```
 
+** SSH configuratión **
+*Executor shell* SSH connection relies on [mscdex/ssh2]:https://github.com/mscdex/ssh2 and these are the exposed options:
+
+| Option | Type |   |
+| host | string | Hostname or IP address of the server. |
+| port | number | Port number of the server. |
+| forceIPv4 | boolean | Only connect via resolved IPv4 address for `host`. |
+| forceIPv6 | boolean | Only connect via resolved IPv6 address for `host`. |
+| hostHash | "md5" or "sha1" | The host's key is hashed using this method and passed to `hostVerifier`. |
+| username | string | Username for authentication. |
+| password | string | Password for password-based user authentication. |
+| agent | string | Path to ssh-agent's UNIX socket for ssh-agent-based user authentication (or 'pageant' when using Pagent on Windows). |
+| privateKey | string | Path to the file that contains a private key for either key-based or hostbased user authentication (OpenSSH format). |
+| passphrase | string | For an encrypted private key, this is the passphrase used to decrypt it. |
+| localHostname | string | Along with `localUsername` and `privateKey`, set this to a non-empty string for hostbased user authentication. |
+| localUsername | string | Along with `localHostname` and `privateKey`, set this to a non-empty string for hostbased user authentication. |
+| tryKeyboard | boolean | Try keyboard-interactive user authentication if primary user authentication method fails. |
+| keepaliveInterval | number | How often (in milliseconds) to send SSH-level keepalive packets to the server. Set to 0 to disable. |
+| keepaliveCountMax | number | How many consecutive, unanswered SSH-level keepalive packets that can be sent to the server before disconnection. |
+| readyTimeout | number | * How long (in milliseconds) to wait for the SSH handshake to complete. |
+| strictVendor | boolean | Performs a strict server vendor check before sending vendor-specific requests. |
+| agentForward | boolean | Set to `true` to use OpenSSH agent forwarding (`auth-agent@openssh.com`) for the life of the connection. |
+
+
 ### Plan sample:
 
 Add in [plan.json]:
