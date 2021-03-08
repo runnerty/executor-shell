@@ -90,6 +90,20 @@ class shellExecutor extends Executor {
         connection.username = execValues.username;
         connection.host = execValues.host;
         connection.port = execValues.port || 22;
+        connection.password = execValues.password;
+        connection.forceIPv4 = execValues.forceIPv4;
+        connection.forceIPv6 = execValues.forceIPv6;
+        connection.hostHash = execValues.hostHash;
+        connection.agent = execValues.agent;
+        connection.passphrase = execValues.passphrase;
+        connection.localHostname = execValues.localHostname;
+        connection.localUsername = execValues.localUsername;
+        connection.tryKeyboard = execValues.tryKeyboard;
+        connection.keepaliveInterval = execValues.keepaliveInterval;
+        connection.keepaliveCountMax = execValues.keepaliveCountMax;
+        connection.readyTimeout = execValues.readyTimeout;
+        connection.strictVendor = execValues.strictVendor;
+        connection.agentForward = execValues.agentForward;
 
         if (this.debug)
           this.logger.log(

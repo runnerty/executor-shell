@@ -22,8 +22,51 @@
         "username": {
           "type": "string"
         },
+        "password": {
+          "type": "string"
+        },
         "privateKey": {
           "type": "string"
+        },
+        "hostHash": {
+          "type": "string",
+          "enum": ["md5", "sha1"]
+        },
+        "passphrase": {
+          "type": "string"
+        },
+        "localHostname": {
+          "type": "string"
+        },
+        "localUsername": {
+          "type": "string"
+        },
+        "forceIPv4": {
+          "type": "boolean"
+        },
+        "forceIPv6": {
+          "type": "boolean"
+        },
+        "tryKeyboard": {
+          "type": "boolean"
+        },
+        "strictVendor": {
+          "type": "boolean"
+        },
+        "agentForward": {
+          "type": "boolean"
+        },
+        "compress": {
+          "type": "boolean"
+        },
+        "keepaliveInterval": {
+          "type": "number"
+        },
+        "keepaliveCountMax": {
+          "type": "number"
+        },
+        "readyTimeout": {
+          "type": "number"
         },
         "debug": {
           "type": "boolean"
