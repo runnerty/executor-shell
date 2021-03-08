@@ -59,10 +59,11 @@ Add in [config.json]:
 }
 ```
 
-** SSH configuratión **
-*Executor shell* SSH connection relies on [mscdex/ssh2]:https://github.com/mscdex/ssh2 and these are the exposed options:
+##### SSH configuratión
+**Executor shell** SSH connection relies on [mscdex/ssh2]:https://github.com/mscdex/ssh2 and these are the exposed options:
 
 | Option | Type |   |
+| ------ | ---- | - |
 | host | string | Hostname or IP address of the server. |
 | port | number | Port number of the server. |
 | forceIPv4 | boolean | Only connect via resolved IPv4 address for `host`. |
