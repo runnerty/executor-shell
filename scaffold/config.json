@@ -5,11 +5,18 @@
       "type": "@runnerty-executor-shell"
     },
     {
-      "id": "shell_ssh",
+      "id": "shell_ssh_privatekey",
       "type": "@runnerty-executor-shell",
       "host": "remote.server.com",
       "username": "runnerty",
       "privateKey": "./ssh/privateKeyFile.pem"
+    },
+    {
+      "id": "shell_ssh_password",
+      "type": "@runnerty-executor-shell",
+      "host": "remote.server.com",
+      "username": "runnerty",
+      "password": "runnerty"
     }
   ]
 }
