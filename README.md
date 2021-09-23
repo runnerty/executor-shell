@@ -10,7 +10,7 @@
 <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg">
 </a>
 
-# Shell executor for [Runnerty]:
+# Shell executor for [Runnerty]
 
 ### Installation:
 
@@ -20,18 +20,18 @@ Through NPM
 npm i @runnerty/executor-shell
 ```
 
-You can also add modules to your project with [runnerty-cli]
+You can also add modules to your project with [runnerty]
 
 ```bash
-npx runnerty-cli add @runnerty/executor-shell
+npx runnerty add @runnerty/executor-shell
 ```
 
-This command installs the module in your project, adds example configuration in your `config.json` and creates an example plan of use.
+This command installs the module in your project, adds example configuration in your [config.json] and creates an example plan of use.
 
-If you have installed [runnerty-cli] globally you can include the module with this command:
+If you have installed [runnerty] globally you can include the module with this command:
 
 ```bash
-rty add @runnerty/executor-shell
+runnerty add @runnerty/executor-shell
 ```
 
 ### Configuration sample:
@@ -132,12 +132,12 @@ This the output of `my-returning-object-process.js`:
 Output values with the object's values.
 It is possible to access the values by [GETVALUE] function:
 
-```
+```json
 @GV(PROCESS_EXEC_JSON_NAME) --> "my output name"
 @GV(PROCESS_EXEC_JSON_LASTNAME) --> "my output lastName"
 ```
 
-[runnerty]: http://www.runnerty.io
+[runnerty]: https://www.runnerty.io
 [downloads-image]: https://img.shields.io/npm/dm/@runnerty/executor-shell.svg
 [npm-url]: https://www.npmjs.com/package/@runnerty/executor-shell
 [npm-image]: https://img.shields.io/npm/v/@runnerty/executor-shell.svg
@@ -146,4 +146,3 @@ It is possible to access the values by [GETVALUE] function:
 [getvalue]: http://docs.runnerty.io/functions/
 [config.json]: http://docs.runnerty.io/config/
 [plan.json]: http://docs.runnerty.io/plan/
-[runnerty-cli]: https://www.npmjs.com/package/runnerty-cli
