@@ -1,6 +1,6 @@
 {
   "name": "@runnerty/executor-shell",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "description": "Runnerty module: shell executor",
   "author": "Runnerty Tech",
   "license": "MIT",
@@ -25,13 +25,13 @@
     "lint": "eslint '**/*.js' && prettier --check '**'"
   },
   "dependencies": {
-    "@runnerty/module-core": "~3.0.6",
-    "ssh2": "^1.4.0"
+    "@runnerty/module-core": "~3.0.7",
+    "ssh2": "^1.5.0"
   },
   "devDependencies": {
-    "eslint": "^7.32.0",
+    "eslint": "^8.5.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "prettier": "^2.4.1"
+    "prettier": "^2.5.1"
   }
 }
